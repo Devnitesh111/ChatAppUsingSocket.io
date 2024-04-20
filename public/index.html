@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Me</title>
+
+<style>
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: black;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: orange;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #messages {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      background-color: #e9eaed;
+      border-radius: 20px;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      max-width: 70%;
+    }
+
+    .message.sent {
+      background-color: #0084ff;
+      color: #fff;
+      align-self: flex-end;
+    }
+
+    .message.received {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .message.received img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    /* Adjust the width of the text input here */
+    input[type="text"] {
+      width: calc(100% - 120px); /* Adjust as needed */
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #0084ff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .color {
+  background: linear-gradient(45deg, #ff6a00, #ee0979, #9000ff, #0099f7, #00e4ff, #ff6a00, #32a852, #ff1493, #ff6600);
+  background-size: 800%; /* Adjust according to the number of colors */
+  animation: gradientChange 12s infinite; /* Adjust duration as needed */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes gradientChange {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+  <h1 class = "color">Chatting</h1>
+
+  <div class="container">
+    <input type="text" id="message" placeholder="Enter Message" />
+    <button id="sendBtn">Send</button>
+
+    <div id="messages"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io()
+    const sendBtn = document.getElementById("sendBtn")
+    const messageInput = document.getElementById("message")
+    const allMessages = document.getElementById("messages")
+
+    socket.on('message', message => {
+      const p = document.createElement('p')
+      p.innerText = message
+      allMessages.appendChild(p)
+    })
+
+    sendBtn.addEventListener('click', e => {
+      const message = messageInput.value
+      console.log(message)
+      socket.emit("user-message", message)
+      messageInput.value = ""; // Clear the input field after sending the message
+    })
+  </script>
+</body>
+</html>
